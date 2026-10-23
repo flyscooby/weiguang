@@ -1,0 +1,9 @@
+/bin/
+/test-results/
+**/recovery/
+**/comfort-settings.xml
+**/comfort-settings.xml.tmp
+*.pdb
+*.log
+*.user
+.vs/

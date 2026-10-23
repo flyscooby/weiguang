@@ -1,0 +1,19 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>舒适模式 · 使用建议与研究依据</title>
+<style>body{font:16px/1.85 system-ui,"Microsoft YaHei",sans-serif;background:#f4f6fa;color:#23334a;margin:0}main{max-width:850px;margin:40px auto;padding:36px;background:#fff;border-radius:24px}h1{line-height:1.3}h2{margin-top:30px}a{color:#176aa6}table{border-collapse:collapse;width:100%}td,th{padding:13px;text-align:left;border-bottom:1px solid #ddd}.note{padding:16px 20px;background:#fff4d9;border-radius:12px}.muted{color:#59677a}</style>
+<main><p class="muted">屏幕亮度工具 · 2026-10-23</p><h1>舒服地看，也记得休息。</h1>
+<p>“护眼模式”是舒适使用预设，不是眼病治疗或预防保证。不同屏幕的 50% 亮度并不对应相同的实际亮度；本工具没有测量环境照度或屏幕亮度。</p>
+<table><tr><th>模式</th><th>软件实际执行</th><th>适合怎样调整</th></tr><tr><td>护眼</td><td>默认 50% 亮度 + 5000 K 暖色参考 + 蓝色通道额外衰减 10%，开启可关闭的休息提醒。</td><td>有正常室内照明时，调整到看清文字且不刺眼；可按 1% 微调。</td></tr><tr><td>夜间</td><td>默认 20% 亮度 + 3800 K 暖色参考 + 蓝色通道额外衰减 20%，开启可关闭的休息提醒。</td><td>较暗环境下的起点；看不清就调亮，保留柔和环境光。暖色由显示器 RGB 增益直接调节，无需跳转系统设置。</td></tr><tr><td>恢复原始设置</td><td>恢复本次修改前的亮度、RGB 增益、原色彩预设和对比度；关闭休息提醒。</td><td>最小化保持生效；正常退出或重新检测前恢复设置。异常退出时保留恢复记录，下一次启动并识别同一屏幕后自动恢复。</td></tr></table>
+<p class="note">50% 和 20% 是可修改的软件初始值，不是研究确定的“最佳护眼数值”。调整滑块后自动应用；点击“保存为护眼 / 保存为夜间”记住整套参数。配置写入 comfort-settings.xml，原始屏幕数据写入 recovery 文件夹。最小化后继续生效，正常退出恢复原始设置。</p>
+<h2>为什么这样设计</h2>
+<p><b>亮度配合环境光。</b>美国眼科学会建议让屏幕亮度与周围光线相适应，并减少反光。软件因此保留 1% 调节和自定义模式，不强制一组适用于所有人的数值。<a href="https://aao.org/eye-health/tips-prevention/computer-usage">AAO：Computers, Digital Devices, and Eye Strain</a></p>
+<p><b>定时看远处。</b>美国国家眼科研究所建议每 20 分钟看约 20 英尺（6 米）外 20 秒。工具用可关闭的托盘通知提醒，不锁屏；Windows 勿扰模式或通知设置可能隐藏提醒。提醒从勾选时开始，退出程序即结束，不统计实际用屏时间。<a href="https://www.nei.nih.gov/eye-health-information/healthy-vision/how-eyes-work/keep-your-eyes-healthy">NEI：Keep Your Eyes Healthy</a></p>
+<p><b>夜间降低光照，但不承诺改善睡眠。</b>Chang 等的随机交叉实验比较了连续五晚、睡前约四小时阅读发光电子书与纸质书，发现发光阅读条件影响褪黑素、昼夜节律与次晨警觉性。它不是对本软件的试验，也不能据此认定某个亮度百分比或色温必然有效。睡前减少用屏时间仍然重要。<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC4313820/">Chang et al., PNAS (2015), DOI: 10.1073/pnas.1418490112</a></p>
+<p><b>不把滤蓝光等同于保护视力。</b>Cochrane 2023 年综述纳入 17 项随机试验（619 人）：滤蓝光眼镜对短期电脑眼疲劳可能没有优势，睡眠结果不确定。这研究的是眼镜，不是屏幕暖色软件，因此也不能直接推断夜间暖色无效。我们只把暖色作为个人舒适偏好与夜间显示选项。<a href="https://www.cochrane.org/evidence/CD013244_blue-light-filtering-spectacle-lenses-visual-performance-macular-back-part-eye-protection-and">Singh et al., Cochrane (2023), DOI: 10.1002/14651858.CD013244.pub2</a></p>
+<h2>这次颜色调节做了什么</h2>
+<p>部分显示器虽然没有标准色温档位，但可以读取、修改红绿蓝增益。工具按原始 RGB 增益计算暖色，并额外降低蓝色通道；不会重复叠加。护眼与夜间都直接应用到显示器。原始对比度默认保留；需要时可自行微调并保存进模式。</p>
+<p>3500–6500 K 是近似暖色参考标尺，6500 K 表示本次操作前的颜色基准，并不表示显示器实际白点恰好为 6500 K。实现使用暖色通道比例插值：3500 K 时 R/G/B 系数为 1/0.76/0.52，6500 K 时为 1/1/1，之间线性变化；再对蓝色通道施加额外衰减。它不是经色度计校准的绝对色温，也不测量光谱。</p>
+<p>“蓝色通道额外衰减 20%”指蓝色增益的可调部分再乘以 0.8，不是“蓝光辐射减少 20%”，更不是医学防护率。蓝光相关健康证据及其局限见上文。做颜色判断、修图时请先恢复原始设置；若系统夜间模式已开启，两者的暖色效果可能叠加。</p>
+<p>所有写入均读取确认；失败会尝试回退。显示器断开时无法完成硬件恢复，恢复记录会保留。不要在有待恢复设置时删除 recovery 文件夹。新版本一次只运行一个实例，避免多个窗口相互覆盖颜色。</p>
+<h2>设备兼容性</h2><p>亮度、RGB 增益和对比度支持情况取决于显示器及连接方式。界面会根据检测结果启用可用功能。暖色参考不等于仪器测得的色温。</p>
+<p class="muted">技术依据：<a href="https://learn.microsoft.com/en-us/windows/win32/api/highlevelmonitorconfigurationapi/nf-highlevelmonitorconfigurationapi-setmonitorredgreenorbluegain">Microsoft：显示器 RGB 增益接口</a>。未提供 RGB 接口的屏幕会禁用颜色模式，不会显示虚假的成功状态。</p>
+</main></html>
